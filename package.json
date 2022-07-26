@@ -1,0 +1,32 @@
+{
+  "name": "cytrus",
+  "version": "1.0.0",
+  "description": "Cytrus implementation in Node.js",
+  "main": "src/cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drag0une/cytrus.git"
+  },
+  "keywords": [
+    "ankama",
+    "dofus",
+    "cytrus"
+  ],
+  "author": "Drag0une",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drag0une/cytrus/issues"
+  },
+  "homepage": "https://github.com/drag0une/cytrus#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "cli-progress": "^3.11.2",
+    "commander": "^9.4.0",
+    "p-limit": "^3.1.0",
+    "sha1-file": "^2.0.1",
+    "tar-fs": "^2.1.1"
+  }
+}
