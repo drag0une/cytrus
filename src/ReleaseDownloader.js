@@ -5,7 +5,45 @@ const events = require('events');
 const sha1File = require('sha1-file');
 const pLimit = require('p-limit');
 
+/**
+ * Starting download event
+ *
+ * @event ReleaseDownloader#start
+ * @type {object}
+ * @property {Number} total - Total number of files to dl
+ */
+
+/**
+ * Progress download event
+ *
+ * @event ReleaseDownloader#progress
+ * @type {object}
+ * @property {Number} nbFilesDownloaded - How many files are already downloaded
+ * @property {Array<String>} filesDownloading - List of filenames downloading
+ */
+
+/**
+ * Download a release
+ * @fires ReleaseDownloader#start
+ * @fires ReleaseDownloader#progress
+ *
+ * @property {Number} nbFilesDownloaded - Number of files already downloaded
+ * @property {Number} nbFilesToDownload - Number of files to update
+ * @property {Array<{String filename, String hash, Number size}>} filesToUpdate - List of file needed to be updated
+ * @property {Array<String>} filesInDl - List of filenames downloading
+ */
 class ReleaseDownloader extends events.EventEmitter {
+  /**
+   *
+   * @param {String} game - Name of the game (ex: dofus)
+   * @param {String} platform - Platform of the game (ex: windows/linux/darwin)
+   * @param {String} releaseName - Release of the game (ex: main/beta/...)
+   * @param {String} version - Version number (ex: 5.0_2.64.9.16)
+   * @param {String} dest - Destination folder
+   * @param {Object} options - Options of the Downloader (see each fields default)
+   * @param {Array<String>} options.ignoredFragments - Fragments ignored (ex: ['win32'] for dofus)
+   * @param {Number} options.maxConcurrentDl - Maximum concurrent download (default: 10)
+   */
   constructor(game, platform, releaseName, version, dest, {
     ignoredFragments = ['win32'],
     maxConcurrentDl = 10,
@@ -140,6 +178,11 @@ class ReleaseDownloader extends events.EventEmitter {
     });
   }
 
+  /**
+   * Run the update (download files...)
+   * The update is finished after it resolve
+   * @returns {Promise<Array<String>>} List of filenames being download
+   */
   async run() {
     this.lastHashes = this.getSavedHashes();
     this.hashes = await this.getRemoteHashes();

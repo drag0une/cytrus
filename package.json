@@ -1,8 +1,11 @@
 {
   "name": "cytrus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cytrus implementation in Node.js",
-  "main": "src/cli.js",
+  "main": "src/index.js",
+  "bin": {
+    "cytrus": "src/cli.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

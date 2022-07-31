@@ -27,10 +27,15 @@ const CYTRUS_VERSION = 5;
  */
 
 /**
+ * Watch a cytrus.json file
  * @fires Cytrus#assets:update
  * @fires Cytrus#release:update
  */
 class Cytrus extends events.EventEmitter{
+  /**
+   * Constructor of the Cytrus class
+   * @param {String} saveFolder - folder of where to save the last data of the remote cytrus.json file to not trigger at each cycle
+   */
   constructor(saveFolder = path.resolve('.')) {
     super();
     this.saveFolder = saveFolder;
@@ -53,7 +58,7 @@ class Cytrus extends events.EventEmitter{
   }
 
   /**
-   * Watch remote repository
+   * Watch remote cytrus.json file
    * @param {Number} interval - interval in ms
    */
   watch(interval) {
@@ -66,7 +71,7 @@ class Cytrus extends events.EventEmitter{
   }
 
   /**
-   * Remove watcher on repository
+   * Remove the watcher of the remote cytrus.json file
    */
   unwatch() {
     clearInterval(this.watchInterval);
@@ -77,19 +82,6 @@ class Cytrus extends events.EventEmitter{
     return (game && game.assets && game.assets.meta && Object.keys(game.assets.meta)) || [];
   }
 
-  async getData() {
-    return (await axios({
-      method: 'GET',
-      url: 'https://launcher.cdn.ankama.com/cytrus.json',
-    })).data;
-  }
-
-  /**
-   * @fires Cytrus#assets:update
-   * @fires Cytrus#release:update
-   *
-   * @returns {Promise<void>} undefined
-   */
   async watcher() {
     const response = await axios({
       method: 'GET',
@@ -108,6 +100,7 @@ class Cytrus extends events.EventEmitter{
       Object.entries(this.lastData.games || {}).forEach(([gameName, lastGame]) => {
         const lastMetaReleases = this.getReleaseMeta(lastGame);
 
+        // Comparing meta
         lastMetaReleases.forEach((releaseName) => {
           const hash = data.games && data.games[gameName] && data.games[gameName].assets && data.games[gameName].assets.meta && data.games[gameName].assets.meta[releaseName];
           if (lastGame.assets.meta[releaseName] !== hash) {
@@ -119,6 +112,7 @@ class Cytrus extends events.EventEmitter{
           }
         });
 
+        // Comparing games
         Object.entries(lastGame.platforms || {}).forEach(([platformName, platform]) => {
           Object.entries(platform).forEach(([releaseName, lastVersion]) => {
             const version = data.games && data.games[gameName] && data.games[gameName].platforms && data.games[gameName].platforms[platformName] && data.games[gameName].platforms[platformName][releaseName];
@@ -138,6 +132,7 @@ class Cytrus extends events.EventEmitter{
       Object.entries(data.games || {}).forEach(([gameName, game]) => {
         const metaReleases = this.getReleaseMeta(game);
 
+        // Comparing assets
         metaReleases.forEach((releaseName) => {
           const lastHash = this.lastData.games && this.lastData.games[gameName] && this.lastData.games[gameName].assets && this.lastData.games[gameName].assets.meta && this.lastData.games[gameName].assets.meta[releaseName];
           if (!lastHash) {
@@ -149,6 +144,7 @@ class Cytrus extends events.EventEmitter{
           }
         });
 
+        // Comparing games
         Object.entries(game.platforms || {}).forEach(([platformName, platform]) => {
           Object.entries(platform).forEach(([releaseName, version]) => {
             const lastVersion = this.lastData.games && this.lastData.games[gameName] && this.lastData.games[gameName].platforms && this.lastData.games[gameName].platforms[platformName] && this.lastData.games[gameName].platforms[platformName][releaseName];
@@ -171,15 +167,3 @@ class Cytrus extends events.EventEmitter{
 }
 
 module.exports = Cytrus;
-
-if (require.main === module) {
-  const cytrus = new Watcher();
-  cytrus.watch(1000);
-
-  cytrus.on('assets:update', ({ game, releaseName, hash }) => {
-    console.log(`Assets(${game}/${releaseName}): ${hash}`);
-  });
-  cytrus.on('release:update', ({ game, releaseName, platform, version }) => {
-    console.log(`Release(${game}/${platform}/${releaseName}): ${version}`);
-  });
-}

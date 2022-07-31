@@ -1,17 +1,29 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const events = require('events');
 const tar = require('tar-fs')
 
-class AssetsDownloader extends events.EventEmitter {
+/**
+ * Download Launcher Assets of a game
+ */
+class AssetsDownloader {
+  /**
+   *  Constructor of AssetsDownloader
+   * @param {String} game - Name of the game
+   * @param {String} hash - Hash id of the Launcher Assets (sha1)
+   * @param {String} dest - Destination folder
+   */
   constructor(game, hash, dest) {
-    super();
     this.game = game;
     this.hash = hash;
     this.dest = dest;
   }
 
+  /**
+   * Run the download of the Launcher Assets
+   * The download is finished after it resolve
+   * @returns {Promise<Array<String>>} List of filenames being download
+   */
   async run() {
     fs.mkdirSync(path.resolve(this.dest), { recursive: true });
     const files = [];
@@ -38,14 +50,3 @@ class AssetsDownloader extends events.EventEmitter {
 }
 
 module.exports = AssetsDownloader;
-
-if (require.main === module) {
-  async function main() {
-    const Update = new AssetsDownloader('dofus', '8d6a163ef9c96bac3978b875f89c23a07c6d0c75', 'assets');
-
-    const files = await Update.run();
-    console.log(files);
-    console.log('Update ended');
-  }
-  main();
-}
