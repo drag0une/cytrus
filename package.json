@@ -1,6 +1,6 @@
 {
   "name": "cytrus",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Cytrus implementation in Node.js",
   "main": "src/index.js",
   "bin": {
@@ -29,6 +29,7 @@
     "cli-progress": "^3.11.2",
     "commander": "^9.4.0",
     "p-limit": "^3.1.0",
+    "p-retry": "^4.6.2",
     "sha1-file": "^2.0.1",
     "tar-fs": "^2.1.1"
   }

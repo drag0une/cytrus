@@ -4,6 +4,7 @@ const path = require('path');
 const events = require('events');
 const sha1File = require('sha1-file');
 const pLimit = require('p-limit');
+const pRetry = require('p-retry');
 
 /**
  * Starting download event
@@ -143,11 +144,11 @@ class ReleaseDownloader extends events.EventEmitter {
 
     const filepath = path.join(this.dest, filename);
 
-    const response = await axios({
+    const response = await pRetry(() => axios({
       method: 'GET',
       url: `https://launcher.cdn.ankama.com/${this.game}/hashes/${hash.slice(0, 2)}/${hash}`,
       responseType: 'stream',
-    });
+    }), { retries: 3 });
     fs.mkdirSync(path.dirname(filepath), { recursive: true });
 
     //ensure that the user can call `then()` only when the file has
