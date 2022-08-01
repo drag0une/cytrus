@@ -1,3 +1,5 @@
 module.exports = {
-  Cytrus: require('./Cytrus')
-}
+  Cytrus: require('./Cytrus'),
+  ReleaseDownloader: require('./ReleaseDownloader'),
+  AssetsDownloader: require('./AssetsDownloader'),
+};
