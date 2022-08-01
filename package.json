@@ -1,6 +1,6 @@
 {
   "name": "cytrus",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Cytrus implementation in Node.js",
   "main": "src/index.js",
   "bin": {
