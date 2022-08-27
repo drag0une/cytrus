@@ -2,6 +2,7 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const events = require('events');
+const pRetry = require('p-retry');
 
 const CYTRUS_VERSION = 5;
 
@@ -83,10 +84,10 @@ class Cytrus extends events.EventEmitter{
   }
 
   async watcher() {
-    const response = await axios({
+    const response = await pRetry(() => axios({
       method: 'GET',
       url: 'https://launcher.cdn.ankama.com/cytrus.json',
-    });
+    }), { retries: 3 });
 
     if (this.lastModifiedHeader !== response.headers['last-modified']) {
       const data = response.data || {};

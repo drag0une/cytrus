@@ -10,7 +10,7 @@ const program = new Command();
 
 program.name('cytrus')
   .description('Cytrus cli')
-  .version('1.0.0');
+  .version(require('../package.json').version);
 
 async function dlUpdate(game, platform, release, version, dest) {
   const update = new ReleaseDownloader(game, platform, release, version, dest);
