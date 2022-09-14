@@ -54,7 +54,12 @@ class Cytrus extends events.EventEmitter{
     }
   }
 
+  getData() {
+    return this.lastData;
+  }
+
   saveData(data) {
+    this.lastData = data;
     fs.writeFileSync(`${this.saveFolder}/cytrus.json`, JSON.stringify(data, null, 2));
   }
 
